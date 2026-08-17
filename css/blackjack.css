@@ -1,0 +1,42 @@
+h1, button{
+    font-family: 'Quattrocento Sans', sans-serif;
+}
+
+body{
+    font-family: 'Courgette', cursive;
+    background: url('../img/velvet-8.jpg') center/cover no-repeat fixed;
+
+}
+
+#sec_debug, #dealer_won{
+    display: none;
+    visibility: hidden;
+}
+
+.h-100 {
+    height: 100%!important;
+}
+
+.sidenav{
+    background: url('../img/cards-wp.jpg') center/cover no-repeat fixed;
+
+}
+
+.cont{
+    height: 100%!important;
+}
+
+#dealer_won{
+    display: none;
+    visibility: hidden;
+}
+
+#player_won{
+    display: none;
+    visibility: hidden;
+}
+
+.background-light{
+    background-color: seashell;
+    opacity: 0.85;
+}

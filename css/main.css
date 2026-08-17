@@ -1,0 +1,112 @@
+
+
+
+.card {
+	background-color: white;
+	display: inline-flex !important;
+    width: 6.45rem;
+	height: 9rem;
+	border: 1px solid #666;
+	border-radius: .4rem;
+	padding: .25rem;
+    margin: 0 .25rem .25rem 0;
+	text-align: center;
+	font-size: 1.2rem;
+    position: relative;
+}
+
+.back {
+	text-indent: -4000px;
+	background-repeat: no-repeat;
+	background-image: url(https://i.pinimg.com/236x/d7/b6/57/d7b657b2f6b94a9d7ddb9b0abfe48397--bicycle-cards-card-card.jpg);
+	background-size: contain;
+}
+
+.red {
+	color: #f00 !important;
+}
+
+.black {
+	color: #000 !important;
+}
+
+.rank, .suit {
+	content: attr(value);
+	display: block !important;
+	line-height: 1;
+	text-align: left;
+}
+
+.rank-right, .suit-right {
+	display: block;
+	line-height: 1;
+	text-align: left;
+	transform: rotate(180deg);
+}
+
+.center {
+	display: inline-block;
+	line-height: 1;
+	padding: 1.2rem;
+	vertical-align: middle;
+	text-align: center;
+	size: 6rem;
+}
+
+/* Camada que cobre o ecrã com desfoque de alta qualidade */
+.end-game-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  transition: all 0.5s ease;
+}
+
+/* Tingimento suave do fundo dependendo do resultado */
+.end-game-overlay.group-win {
+  background: rgba(6, 78, 59, 0.3) !important; /* Verde translúcido muito suave */
+}
+
+.end-game-overlay.group-lose {
+  background: rgba(136, 19, 55, 0.3) !important; /* Vermelho translúcido muito suave */
+}
+
+/* Forçar a ocultação quando a classe hidden está ativa */
+.end-game-overlay.hidden {
+  display: none !important;
+}
+
+/* Cartão central minimalista e suspenso */
+.end-game-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3rem;
+  border-radius: 2.5rem;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+  width: 400px;
+  max-width: 90%;
+  
+  /* Animação refinada de escala */
+  transform: scale(0.95);
+  opacity: 0;
+  animation: smoothPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes smoothPop {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <!-- Tailwind CSS para a estrutura moderna -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts para uma tipografia limpa -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="js/blackjack_object.js"></script>
+  <script src="js/blackjack_manager.js"></script>
+  
+  <title>BlackJack</title>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 50% 50%, #1a3a2a 0%, #0a1f14 100%);
+position: relative !important;
+  min-height: 100vh !important; /* Corrigido de 'min-h' para 'min-height' */
+  overflow-x: hidden !important; 
+}
+
+/* CANTO SUPERIOR DIREITO DO ECRÃ */
+body::before {
+  content: "" !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 180px !important;
+  height: 180px !important;
+  z-index: -1 !important;
+  opacity: 0.15 !important;
+  pointer-events: none !important;
+  
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23ffffff' stroke-width='1.5'%3E%3Cpath d='M100,0 C60,0 30,30 30,70 C30,85 45,95 60,80 C75,65 65,40 45,50 C25,60 10,90 40,100 M100,0 C80,30 40,40 60,10 M90,0 C75,15 70,35 85,25'/%3E%3Ccircle cx='45' cy='50' r='2' fill='%23ffffff'/%3E%3C/svg%3E") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: top right !important;
+}
+
+/* CANTO INFERIOR ESQUERDO DO ECRÃ */
+body::after {
+  content: "" !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 180px !important;
+  height: 180px !important;
+  z-index: -1 !important;
+  opacity: 0.15 !important;
+  pointer-events: none !important;
+  
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23ffffff' stroke-width='1.5'%3E%3Cpath d='M100,0 C60,0 30,30 30,70 C30,85 45,95 60,80 C75,65 65,40 45,50 C25,60 10,90 40,100 M100,0 C80,30 40,40 60,10 M90,0 C75,15 70,35 85,25'/%3E%3Ccircle cx='45' cy='50' r='2' fill='%23ffffff'/%3E%3C/svg%3E") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: top right !important;
+  transform: rotate(180deg) !important;
+}
+
+
+    /* Efeito de Vidro (Glassmorphism) */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    /* Botões */
+    .control-btn {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .control-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .control-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .control-btn:disabled {
+      opacity: 0.2;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: #0071e3;
+      border: none;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #147ce5;
+    }
+
+    /* ESTILIZAÇÃO DAS CARTAS */
+    .card {
+      width: 90px;
+      height: 130px;
+      background: white;
+      border-radius: 12px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 8px;
+      color: #1d1d1f;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      user-select: none;
+      
+      /* Efeito de transição e animação ao entrar */
+      opacity: 0;
+      animation: dealCard 0.45s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    }
+
+    /* Carta virada para baixo (Design Profissional de Casino) */
+    .card.back {
+      /* Fundo azul-escuro premium */
+      background-color: #721c24 !important;      
+      /* Padrão geométrico profissional em linhas finas douradas/brancas translúcidas */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M8 0L0 8l8 8 8-8L8 0zM0 0l4 4L0 8V0zm16 0v8l-4-4 4-4zM0 16v-8l4 4-4 4zm16 0l-4-4 4-4v8z'/%3E%3C/g%3E%3C/svg%3E") !important;
+      
+      /* Moldura interna clássica de baralho */
+      border: 4px solid #ffffff !important;
+      outline: 1px solid rgba(255, 255, 255, 0.2) !important;
+      outline-offset: -8px !important;
+      
+      /* Sombras projetadas mais profundas para dar volume à carta */
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    /* Garante que nenhum texto ou naipe vaza pela traseira da carta */
+    .card.back * {
+      display: none !important;
+    }
+
+    /* Cores dos Naipes */
+    .red { color: #ff3b30; }
+    .black { color: #1d1d1f; }
+
+    /* Posições dos elementos da carta */
+    .rank {
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .suit {
+      font-size: 1rem;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.2rem;
+    }
+    .rank-right {
+      transform: rotate(180deg);
+      align-self: flex-end;
+      text-align: right;
+    }
+
+    /* ANIMAÇÃO DE DISTRIBUIÇÃO (DEAL CARD) */
+    @keyframes dealCard {
+      0% {
+        opacity: 0;
+        transform: translateY(-100px) translateX(100px) rotate(20deg) scale(0.6);
+        filter: blur(2px);
+      }
+      70% {
+        opacity: 1;
+        filter: none;
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body class="text-white min-h-screen flex flex-col justify-between p-4 md:p-8 relative bg-[#061e12]">
+  <!-- ECRÃ INICIAL DE BOAS-VINDAS (Desaparece ao clicar) -->
+    <div id="welcome_screen" class="fixed inset-0 bg-[#061e12]/95 backdrop-blur-md z-50 flex flex-col items-center justify-center transition-all duration-500">
+      <h2 class="text-4xl md:text-5xl font-black uppercase tracking-wider mb-6 bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent">
+        Mesa de Blackjack
+      </h2>
+      <button class="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold uppercase tracking-widest rounded-2xl shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all duration-300 transform hover:scale-105" 
+              onclick="startGameForReal()">
+        Entrar na Mesa
+      </button>
+    </div>
+
+
+  <!-- Título Estilizado Premium (Ajustado) -->
+  <header class="w-full max-w-5xl mx-auto text-center my-8 relative z-10 flex flex-col items-center justify-center">
+    <!-- Título Principal Compacto e Marcante -->
+    <h1 class="text-5xl md:text-6xl font-black tracking-normal uppercase select-none drop-shadow-[0_5px_15px_rgba(0,0,0,0.6)] bg-gradient-to-b from-white via-gray-200 to-gray-500 bg-clip-text text-transparent">
+      Blackjack
+    </h1>
+    
+    <!-- Linha Divisória Mais Comprida e Espaçada -->
+    <div class="w-48 md:w-64 h-[2px] mt-6 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_10px_#34d399]"></div>
+  </header>
+
+  <!-- Contentor do Jogo -->
+  <main class="w-full max-w-5xl mx-auto flex-grow flex flex-col justify-center gap-6 my-6">
+    
+    <!-- Tabuleiro do Dealer -->
+    <div class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 relative">
+      <div class="flex flex-col items-center md:items-start min-w-[150px]">
+        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Dealer</span>
+        <div class="flex items-baseline gap-2 mt-1">
+          <span id="dealer_points" class="text-3xl font-bold">—</span>
+          <span class="text-sm text-gray-400">pts</span>
+        </div>
+        
+        <!-- Status de Fim de jogo -->
+        <div class="mt-2 text-center md:text-left">
+          <p id="dealer_won_string" class="text-xs font-bold uppercase tracking-wider text-red-400 bg-red-500/10 px-2 py-1 rounded-md inline-block">Dealer GANHOU!</p>
+          <img id="dealer_won" class="w-10 h-10 mt-2 rounded-full object-cover mx-auto md:mx-0" src="./img/VZvx.gif" alt="Lost">
+        </div>
+      </div>
+
+      <!-- Área de Cartas do Dealer -->
+      <div class="flex-grow flex flex-wrap justify-center md:justify-end gap-4 p-2" id="dealer"></div>
+    </div>
+
+    <!-- Tabuleiro do Jogador -->
+    <div class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 relative">
+      <div class="flex flex-col items-center md:items-start min-w-[150px]">
+        <span class="text-xs font-semibold uppercase tracking-wider text-blue-400">Teu Jogo</span>
+        <div class="flex items-baseline gap-2 mt-1">
+          <span id="player_points" class="text-3xl font-bold">—</span>
+          <span class="text-sm text-gray-400">pts</span>
+        </div>
+
+        <!-- Status de Fim de jogo -->
+        <div class="mt-2 text-center md:text-left">
+          <p id="player_won_string" class="text-xs font-bold uppercase tracking-wider text-green-400 bg-green-500/10 px-2 py-1 rounded-md inline-block">Player GANHOU!</p>
+          <img id="player_won" class="w-10 h-10 mt-2 rounded-full object-cover mx-auto md:mx-0" src="./img/VZvx.gif" alt="Won">
+        </div>
+      </div>
+
+      <!-- Área de Cartas do Jogador -->
+      <div class="flex-grow flex flex-wrap justify-center md:justify-end gap-4 p-2" id="player"></div>
+    </div>
+
+  </main>
+
+  <!-- Botões de Controlo -->
+  <footer class="w-full max-w-md mx-auto mb-4">
+    <div class="glass-panel rounded-2xl p-2 flex justify-between gap-2 shadow-2xl">
+      <button id="card" type="button" class="control-btn flex-1 py-3 px-2 rounded-xl text-xs font-semibold uppercase tracking-wider" onclick="player_new_card()">
+        Card
+      </button>
+      <button id="stand" type="button" class="control-btn flex-1 py-3 px-2 rounded-xl text-xs font-semibold uppercase tracking-wider" onclick="dealer_finish()">
+        Stand
+      </button>
+      <button id="new_game" type="button" class="control-btn btn-primary flex-1 py-3 px-2 rounded-xl text-xs font-semibold uppercase tracking-wider text-white shadow-lg" onclick="new_game()" disabled>
+        New Game
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    window.onload = function() {
+      new_game();
+    };
+  </script>
+</body>
+
+</html>
