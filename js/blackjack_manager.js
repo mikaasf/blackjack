@@ -63,8 +63,8 @@ function new_game() {
   document.getElementById("dealer_won_string").style.visibility = "hidden";
   document.getElementById("dealer_won_string").style.display = "none";
 
-  document.getElementById("player_points").innerHTML = game.get_cards_value(player_show)
-  document.getElementById("dealer_points").innerHTML = game.get_cards_value(dealer_show[0][0])
+  document.getElementById("player_points").innerHTML = game.get_cards_value(player_show);
+  document.getElementById("dealer_points").innerHTML = game.get_cards_value([dealer_show[0]]);
 
   buttons_initialization();
 }
